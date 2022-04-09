@@ -1,6 +1,6 @@
 {
 	"name": "dynamic-profile-readme",
-	"version": "1.0.0",
+	"version": "0.1.1",
 	"private": "true",
 	"description": "Dynamically generated README using widgets",
 	"main": "index.js",
