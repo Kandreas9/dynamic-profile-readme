@@ -2,7 +2,7 @@ name: 'Dynamic Profile README'
 description: 'Dynamically generates README with your github stats.'
 author: 'Smor'
 
-brandin:
+branding:
   icon: 'book-open'
   color: 'blue'
 
