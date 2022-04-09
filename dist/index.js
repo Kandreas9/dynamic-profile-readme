@@ -8492,7 +8492,7 @@ var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./lib/widgets/activity.js
 const eventsObj = {
     ReleaseEvent(event) {
-        return `✨ ${event.payload.tag_name} of ${event.repo.name} was ${event.payload.action}.`;
+        return `✨ ${event.payload.release.tag_name} of ${event.repo.name} was ${event.payload.action}.`;
     },
     ForkEvent(event) {
         return `🍴 Forked ${event.payload.full_name}.`;
@@ -8514,8 +8514,8 @@ function handleEvent(event) {
 }
 function activityWidget(events) {
     return events
-        .slice(0, 10)
         .filter((event) => event.type in eventsObj)
+        .slice(0, 10)
         .map(handleEvent)
         .join('\n');
 }

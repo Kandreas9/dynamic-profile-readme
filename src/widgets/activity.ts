@@ -1,6 +1,6 @@
 const eventsObj = {
 	ReleaseEvent(event) {
-		return `✨ ${event.payload.tag_name} of ${event.repo.name} was ${event.payload.action}.`
+		return `✨ ${event.payload.release.tag_name} of ${event.repo.name} was ${event.payload.action}.`
 	},
 	ForkEvent(event) {
 		return `🍴 Forked ${event.payload.full_name}.`
@@ -26,8 +26,8 @@ function handleEvent(event) {
 
 export default function activityWidget(events) {
 	return events
-		.slice(0, 10)
-		.filter((event) => event.type in eventsObj)
-		.map(handleEvent)
+		.filter((event) => event.type in eventsObj) //Filter unsupported events
+		.slice(0, 10) //Limit to 10 events
+		.map(handleEvent) //Parse event data
 		.join('\n')
 }
