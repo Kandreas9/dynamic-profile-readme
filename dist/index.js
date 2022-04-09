@@ -8492,7 +8492,7 @@ var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./lib/widgets/activity.js
 const eventsObj = {
     ReleaseEvent(event) {
-        return `✨ ${event.payload.tag_name} of ${event.repo.name} was ${event.paylaod.action}.`;
+        return `✨ ${event.payload.tag_name} of ${event.repo.name} was ${event.payload.action}.`;
     },
     ForkEvent(event) {
         return `🍴 Forked ${event.payload.full_name}.`;

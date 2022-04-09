@@ -1,6 +1,6 @@
 const eventsObj = {
 	ReleaseEvent(event) {
-		return `✨ ${event.payload.tag_name} of ${event.repo.name} was ${event.paylaod.action}.`
+		return `✨ ${event.payload.tag_name} of ${event.repo.name} was ${event.payload.action}.`
 	},
 	ForkEvent(event) {
 		return `🍴 Forked ${event.payload.full_name}.`
