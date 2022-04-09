@@ -15,7 +15,7 @@ async function main() {
 			username: USERNAME,
 		})
 
-		const source = fs.readFileSync(__dirname + TEMPLATE, 'utf-8')
+		const source = fs.readFileSync(TEMPLATE, 'utf-8')
 		const reggie = /<!--GITHUB_ACTIVITY-->/g
 		// const matchList = []
 

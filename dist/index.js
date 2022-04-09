@@ -8530,10 +8530,10 @@ async function main() {
         const activity = await octokit.rest.activity.listPublicEventsForUser({
             username: USERNAME,
         });
-        const source = external_fs_.readFileSync(__dirname + TEMPLATE, 'utf-8');
+        const source = external_fs_.readFileSync(TEMPLATE, 'utf-8');
         const reggie = /<!--GITHUB_ACTIVITY-->/g;
         let activityData = activityWidget(activity.data);
-        external_fs_.writeFileSync('template.md', source.replaceAll(reggie, activityData));
+        external_fs_.writeFileSync('README.md', source.replaceAll(reggie, activityData));
     }
     catch (err) {
         core.error(err);
