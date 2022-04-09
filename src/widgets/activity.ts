@@ -25,5 +25,9 @@ function handleEvent(event) {
 }
 
 export default function activityWidget(events) {
-	return events.slice(0, 10).map(handleEvent).join('\n')
+	return events
+		.slice(0, 10)
+		.filter((event) => event.type in eventsObj)
+		.map(handleEvent)
+		.join('\n')
 }

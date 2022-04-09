@@ -8513,7 +8513,11 @@ function handleEvent(event) {
     return eventsObj[event.type](event);
 }
 function activityWidget(events) {
-    return events.slice(0, 10).map(handleEvent).join('\n');
+    return events
+        .slice(0, 10)
+        .filter((event) => event.type in eventsObj)
+        .map(handleEvent)
+        .join('\n');
 }
 //# sourceMappingURL=activity.js.map
 ;// CONCATENATED MODULE: ./lib/index.js
