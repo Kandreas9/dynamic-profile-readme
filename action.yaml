@@ -1,0 +1,18 @@
+name: 'Dynamic Profile README'
+description: 'Dynamically generates README with your github stats.'
+author: 'Smor'
+
+inputs:
+  GITHUB_TOKEN:
+    description: 'Github token'
+    required: true
+  USERNAME:
+    description: 'Github username'
+    required: true
+  TEMPLATE:
+    description: 'TEMPLATE.md file path'
+    required: true
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

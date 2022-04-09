@@ -1,0 +1,23 @@
+{
+	"name": "dynamic-profile-readme",
+	"version": "1.0.0",
+	"private": "true",
+	"description": "Dynamically generated README using widgets",
+	"main": "index.js",
+	"scripts": {
+		"dev": "node lib/index.js",
+		"build": "tsc && ncc build lib/index.js -o dist"
+	},
+	"keywords": [],
+	"author": "Smor",
+	"license": "MIT",
+	"dependencies": {
+		"@actions/core": "^1.6.0",
+		"@actions/github": "^5.0.1"
+	},
+	"devDependencies": {
+		"@types/node": "^17.0.23",
+		"@vercel/ncc": "^0.33.3",
+		"typescript": "^4.6.3"
+	}
+}
