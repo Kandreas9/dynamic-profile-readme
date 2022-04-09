@@ -2,6 +2,10 @@ name: 'Dynamic Profile README'
 description: 'Dynamically generates README with your github stats.'
 author: 'Smor'
 
+brandin:
+  icon: 'book-open'
+  color: 'blue'
+
 inputs:
   GITHUB_TOKEN:
     description: 'Github token'
