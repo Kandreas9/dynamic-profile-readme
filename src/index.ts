@@ -25,7 +25,7 @@ async function main() {
 
 		let activityData = activityWidget(activity.data)
 
-		fs.writeFileSync('template.md', source.replaceAll(reggie, activityData))
+		fs.writeFileSync('README.md', source.replaceAll(reggie, activityData))
 	} catch (err) {
 		core.error(err)
 		process.exit(1)
