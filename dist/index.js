@@ -8489,41 +8489,7 @@ var core = __nccwpck_require__(2186);
 var external_fs_ = __nccwpck_require__(7147);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5438);
-;// CONCATENATED MODULE: ./src/widgets/languages.ts
-const statsObj = {};
-let totalBytes = 0;
-function handleEvent(repoStats) {
-    for (const lang in repoStats) {
-        totalBytes += repoStats[lang];
-        if (statsObj[lang] === undefined) {
-            statsObj[lang] = repoStats[lang];
-        }
-        else {
-            statsObj[lang] += repoStats[lang];
-        }
-    }
-}
-function languageWidget(stats) {
-    const statsData = [];
-    let longestLangWordLength = 0;
-    stats.forEach(handleEvent);
-    for (const lang in statsObj) {
-        statsData.push([lang, (statsObj[lang] / totalBytes) * 100]);
-    }
-    return statsData
-        .map((el) => {
-        if (el[0].length > longestLangWordLength) {
-            longestLangWordLength = el[0].length;
-        }
-        return [el[0], el[1]];
-    })
-        .sort((a, b) => a[1] + b[1])
-        .map((el) => [el[0], Math.ceil(el[1])])
-        .map((el) => `${el[0] + " ".repeat(longestLangWordLength + 1 - el[0].length)}0% ${"=".repeat(el[1]) + " ".repeat(100 - el[1])} 100%`)
-        .join("\n");
-}
-
-;// CONCATENATED MODULE: ./lib/widgets/activity.js
+;// CONCATENATED MODULE: ./src/widgets/activity.ts
 const eventsObj = {
     ReleaseEvent(event) {
         return `✨ ${event.payload.release.tag_name} of ${event.repo.name} was ${event.payload.action}.`;
@@ -8543,17 +8509,51 @@ const eventsObj = {
             : `${event.payload.size} commit`} to ${event.repo.name}`;
     },
 };
-function activity_handleEvent(event) {
+function handleEvent(event) {
     return eventsObj[event.type](event);
 }
 function activityWidget(events) {
     return events
         .filter((event) => event.type in eventsObj)
         .slice(0, 10)
-        .map(activity_handleEvent)
+        .map(handleEvent)
         .join('\n');
 }
-//# sourceMappingURL=activity.js.map
+
+;// CONCATENATED MODULE: ./src/widgets/languages.ts
+const statsObj = {};
+let totalBytes = 0;
+function languages_handleEvent(repoStats) {
+    for (const lang in repoStats) {
+        totalBytes += repoStats[lang];
+        if (statsObj[lang] === undefined) {
+            statsObj[lang] = repoStats[lang];
+        }
+        else {
+            statsObj[lang] += repoStats[lang];
+        }
+    }
+}
+function languageWidget(stats) {
+    const statsData = [];
+    let longestLangWordLength = 0;
+    stats.forEach(languages_handleEvent);
+    for (const lang in statsObj) {
+        statsData.push([lang, (statsObj[lang] / totalBytes) * 100]);
+    }
+    return statsData
+        .map((el) => {
+        if (el[0].length > longestLangWordLength) {
+            longestLangWordLength = el[0].length;
+        }
+        return [el[0], el[1]];
+    })
+        .sort((a, b) => a[1] + b[1])
+        .map((el) => [el[0], Math.ceil(el[1])])
+        .map((el) => `${el[0] + " ".repeat(longestLangWordLength + 1 - el[0].length)}0% ${"=".repeat(el[1]) + " ".repeat(100 - el[1])} 100%`)
+        .join("\n");
+}
+
 ;// CONCATENATED MODULE: ./lib/helpers/parseRegEx.js
 
 
@@ -8568,7 +8568,7 @@ async function parseRegExWidget(source, USERNAME, GITHUB_TOKEN) {
             username: USERNAME,
         });
         const activityData = activityWidget(activity.data);
-        external_fs_.writeFileSync("README.md", source.replaceAll(reggieActivity, activityData));
+        source = source.replaceAll(reggieActivity, activityData);
     }
     if (reggieLang.test(source)) {
         const repos = await octokit.rest.repos.listForUser({

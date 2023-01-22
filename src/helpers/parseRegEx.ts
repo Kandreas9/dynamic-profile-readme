@@ -1,8 +1,8 @@
 import * as github from "@actions/github";
 import * as fs from "fs";
-import languageWidget from "src/widgets/languages";
 
-import activityWidget from "../widgets/activity";
+import activityWidget from "src/widgets/activity";
+import languageWidget from "src/widgets/languages";
 
 export async function parseRegExWidget(source, USERNAME, GITHUB_TOKEN) {
 	const octokit = github.getOctokit(GITHUB_TOKEN);
@@ -17,10 +17,7 @@ export async function parseRegExWidget(source, USERNAME, GITHUB_TOKEN) {
 
 		const activityData = activityWidget(activity.data);
 
-		fs.writeFileSync(
-			"README.md",
-			source.replaceAll(reggieActivity, activityData)
-		);
+		source = source.replaceAll(reggieActivity, activityData);
 	}
 
 	if (reggieLang.test(source)) {
