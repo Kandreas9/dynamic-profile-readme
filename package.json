@@ -5,7 +5,7 @@
 	"description": "Dynamically generated README using widgets",
 	"main": "index.js",
 	"scripts": {
-		"dev": "node lib/index.js",
+		"dev": "npm run build && node dist/index.js",
 		"build": "tsc && ncc build lib/index.js -o dist"
 	},
 	"keywords": [],

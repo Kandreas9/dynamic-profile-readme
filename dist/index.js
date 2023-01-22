@@ -8485,10 +8485,44 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(5438);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(7147);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5438);
+;// CONCATENATED MODULE: ./src/widgets/languages.ts
+const statsObj = {};
+let totalBytes = 0;
+function handleEvent(repoStats) {
+    for (const lang in repoStats) {
+        totalBytes += repoStats[lang];
+        if (statsObj[lang] === undefined) {
+            statsObj[lang] = repoStats[lang];
+        }
+        else {
+            statsObj[lang] += repoStats[lang];
+        }
+    }
+}
+function languageWidget(stats) {
+    const statsData = [];
+    let longestLangWordLength = 0;
+    stats.forEach(handleEvent);
+    for (const lang in statsObj) {
+        statsData.push([lang, (statsObj[lang] / totalBytes) * 100]);
+    }
+    return statsData
+        .map((el) => {
+        if (el[0].length > longestLangWordLength) {
+            longestLangWordLength = el[0].length;
+        }
+        return [el[0], el[1]];
+    })
+        .sort((a, b) => a[1] + b[1])
+        .map((el) => [el[0], Math.ceil(el[1])])
+        .map((el) => `${el[0] + " ".repeat(longestLangWordLength + 1 - el[0].length)}0% ${"=".repeat(el[1]) + " ".repeat(100 - el[1])} 100%`)
+        .join("\n");
+}
+
 ;// CONCATENATED MODULE: ./lib/widgets/activity.js
 const eventsObj = {
     ReleaseEvent(event) {
@@ -8509,35 +8543,61 @@ const eventsObj = {
             : `${event.payload.size} commit`} to ${event.repo.name}`;
     },
 };
-function handleEvent(event) {
+function activity_handleEvent(event) {
     return eventsObj[event.type](event);
 }
 function activityWidget(events) {
     return events
         .filter((event) => event.type in eventsObj)
         .slice(0, 10)
-        .map(handleEvent)
+        .map(activity_handleEvent)
         .join('\n');
 }
 //# sourceMappingURL=activity.js.map
-;// CONCATENATED MODULE: ./lib/index.js
+;// CONCATENATED MODULE: ./lib/helpers/parseRegEx.js
 
+
+
+
+async function parseRegExWidget(source, USERNAME, GITHUB_TOKEN) {
+    const octokit = github.getOctokit(GITHUB_TOKEN);
+    const reggieActivity = /<!--GITHUB_ACTIVITY-->/g;
+    const reggieLang = /<!--GITHUB_LANGUAGES-->/g;
+    if (reggieActivity.test(source)) {
+        const activity = await octokit.rest.activity.listPublicEventsForUser({
+            username: USERNAME,
+        });
+        const activityData = activityWidget(activity.data);
+        external_fs_.writeFileSync("README.md", source.replaceAll(reggieActivity, activityData));
+    }
+    if (reggieLang.test(source)) {
+        const repos = await octokit.rest.repos.listForUser({
+            username: USERNAME,
+        });
+        const langStatsArray = [];
+        for (let repo of repos.data) {
+            const stats = await octokit.rest.repos.listLanguages({
+                owner: USERNAME,
+                repo: repo.name,
+            });
+            langStatsArray.push(stats.data);
+        }
+        const langData = languageWidget(langStatsArray);
+        external_fs_.writeFileSync("README.md", source.replaceAll(reggieLang, langData));
+    }
+}
+//# sourceMappingURL=parseRegEx.js.map
+;// CONCATENATED MODULE: ./lib/index.js
 
 
 
 async function main() {
     try {
-        const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
-        const USERNAME = core.getInput('USERNAME');
-        const TEMPLATE = core.getInput('TEMPLATE');
-        const octokit = github.getOctokit(GITHUB_TOKEN);
-        const activity = await octokit.rest.activity.listPublicEventsForUser({
-            username: USERNAME,
-        });
-        const source = external_fs_.readFileSync(TEMPLATE, 'utf-8');
-        const reggie = /<!--GITHUB_ACTIVITY-->/g;
-        let activityData = activityWidget(activity.data);
-        external_fs_.writeFileSync('README.md', source.replaceAll(reggie, activityData));
+        const GITHUB_TOKEN = "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";
+        const USERNAME = "Kandreas9";
+        const TEMPLATE = "./TEMPLATE.md";
+        const source = external_fs_.readFileSync(TEMPLATE, "utf-8");
+        parseRegExWidget(source, USERNAME, GITHUB_TOKEN);
     }
     catch (err) {
         core.error(err);

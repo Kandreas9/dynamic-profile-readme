@@ -1,26 +1,17 @@
 import * as core from "@actions/core";
-import * as github from "@actions/github";
 import * as fs from "fs";
 
-import activityWidget from "./widgets/activity";
+import { parseRegExWidget } from "./helpers/parseRegEx";
 
 async function main() {
 	try {
 		const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
 		const USERNAME = core.getInput("USERNAME");
 		const TEMPLATE = core.getInput("TEMPLATE");
-		const octokit = github.getOctokit(GITHUB_TOKEN);
-
-		const activity = await octokit.rest.activity.listPublicEventsForUser({
-			username: USERNAME,
-		});
 
 		const source = fs.readFileSync(TEMPLATE, "utf-8");
-		const reggie = /<!--GITHUB_ACTIVITY-->/g;
 
-		let activityData = activityWidget(activity.data);
-
-		fs.writeFileSync("README.md", source.replaceAll(reggie, activityData));
+		parseRegExWidget(source, USERNAME, GITHUB_TOKEN);
 	} catch (err) {
 		core.error(err);
 		process.exit(1);
