@@ -8593,9 +8593,9 @@ async function parseRegExWidget(source, USERNAME, GITHUB_TOKEN) {
 
 async function main() {
     try {
-        const GITHUB_TOKEN = "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";
-        const USERNAME = "Kandreas9";
-        const TEMPLATE = "./TEMPLATE.md";
+        const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
+        const USERNAME = core.getInput("USERNAME");
+        const TEMPLATE = core.getInput("TEMPLATE");
         const source = external_fs_.readFileSync(TEMPLATE, "utf-8");
         parseRegExWidget(source, USERNAME, GITHUB_TOKEN);
     }
