@@ -20,7 +20,7 @@ export default function languageWidget(stats) {
 	stats.forEach(handleEvent);
 
 	for (const lang in statsObj) {
-		statsData.push([lang, (statsObj[lang] / totalBytes) * 100]);
+		statsData.push([lang, (statsObj[lang] / totalBytes) * 70]);
 	}
 
 	return statsData
@@ -31,13 +31,13 @@ export default function languageWidget(stats) {
 
 			return [el[0], el[1]];
 		}) //Find longest word
-		.sort((a, b) => a[1] + b[1]) //Sort from highest to lowest
+		.sort((a, b) => b[1] - a[1]) //Sort from highest to lowest
 		.map((el) => [el[0], Math.ceil(el[1])]) //Round numbers
 		.map(
 			(el) =>
 				`${
 					el[0] + " ".repeat(longestLangWordLength + 1 - el[0].length)
-				}0% ${"=".repeat(el[1]) + " ".repeat(100 - el[1])} 100%`
+				}0% ${"=".repeat(el[1]) + " ".repeat(70 - el[1])} 100%`
 		) //Setup new array with the formated string
 		.join("\n");
 }
